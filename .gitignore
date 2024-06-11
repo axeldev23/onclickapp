@@ -33,7 +33,7 @@ wheels/
 *.db
 *.sqlite3
 *.sqlite3-journal
-media/
+
 
 # If your media folder is different, add it here
 # media_root/
