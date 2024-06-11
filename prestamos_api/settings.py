@@ -35,6 +35,14 @@ ALLOWED_HOSTS = [
     config('ALLOWED_HOSTS')
 ]
 
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 # Application definition
 
