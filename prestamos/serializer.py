@@ -9,10 +9,11 @@ class PrestamoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ClienteSerializer(serializers.ModelSerializer):
+    foto_identificacion = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Cliente
         fields = '__all__'
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
