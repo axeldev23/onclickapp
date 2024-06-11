@@ -1,4 +1,6 @@
 from django.db import models
+import os
+
 
 class Cliente(models.Model):
     nombre_completo = models.CharField(max_length=255)
@@ -8,9 +10,26 @@ class Cliente(models.Model):
     numero_telefono = models.CharField(max_length=20)
     foto_identificacion = models.ImageField(upload_to='clientes_identificaciones/', blank=True, null=True)
 
+    def delete(self, *args, **kwargs):
+        if self.foto_identificacion:
+            if os.path.isfile(self.foto_identificacion.path):
+                os.remove(self.foto_identificacion.path)
+        super(Cliente, self).delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        try:
+            old_instance = Cliente.objects.get(pk=self.pk)
+            if old_instance.foto_identificacion and old_instance.foto_identificacion != self.foto_identificacion:
+                if os.path.isfile(old_instance.foto_identificacion.path):
+                    os.remove(old_instance.foto_identificacion.path)
+        except Cliente.DoesNotExist:
+            pass
+        super(Cliente, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.nombre_completo
-
+    
+    
 class Prestamo(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)  # Cambiar cliente_id a cliente
     imei = models.CharField(max_length=255)
