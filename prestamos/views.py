@@ -10,7 +10,20 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from django.http import Http404
+from django.http import FileResponse
 
+
+def download_image(request, cliente_id):
+    cliente = get_object_or_404(Cliente, pk=cliente_id)
+    if cliente.foto_identificacion:
+        file_path = cliente.foto_identificacion.path
+        try:
+            return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=cliente.foto_identificacion.name)
+        except FileNotFoundError:
+            raise Http404()
+    else:
+        raise Http404()
 
 
 @api_view(['POST'])

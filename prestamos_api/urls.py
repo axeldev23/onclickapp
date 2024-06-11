@@ -22,6 +22,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('prestamos.urls')),
+    path('download_image/<int:cliente_id>/', views.download_image, name='download_image'),  # Añade esta línea
+
 
 ]
 

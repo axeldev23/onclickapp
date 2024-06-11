@@ -15,11 +15,13 @@ urlpatterns = [
     re_path('login', views.login),
     re_path('register', views.register),
     re_path('profile', views.profile),
+    path('download_image/<int:cliente_id>/', views.download_image, name='download_image'),  # Añade esta línea
 
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+else:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
