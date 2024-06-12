@@ -15,7 +15,8 @@ urlpatterns = [
     re_path('login', views.login),
     re_path('register', views.register),
     re_path('profile', views.profile),
-    path('download_image/<int:cliente_id>/', views.download_image, name='download_image')  # Añade esta línea
+    path('download_image/<int:cliente_id>/', views.download_image, name='download_image'),  # Añade esta línea
+
 
 ]
 
