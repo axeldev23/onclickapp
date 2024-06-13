@@ -9,6 +9,7 @@ class Cliente(models.Model):
     correo_electronico = models.EmailField(blank=True, null=True)
     numero_telefono = models.CharField(max_length=20)
     foto_identificacion = models.ImageField(upload_to='clientes_identificaciones/', blank=True, null=True)
+    clave_elector = models.CharField(max_length=18, unique=True)  
 
     def delete(self, *args, **kwargs):
         if self.foto_identificacion:
