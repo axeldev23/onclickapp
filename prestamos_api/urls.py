@@ -22,7 +22,6 @@ from django.urls import re_path
 from django.views.static import serve
 
 urlpatterns = [
-    path('', include('prestamos.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('prestamos.urls')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})
