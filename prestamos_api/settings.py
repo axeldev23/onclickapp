@@ -100,7 +100,7 @@ DATABASES = {
     # }
 
     'default': dj_database_url.config(
-        default=config('DATABASE_URL_EXTERNA')
+        default=config('DATABASE_URL_INTERNA')
     )
 }
 
