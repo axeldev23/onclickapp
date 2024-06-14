@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'storages',
     'rest_framework',
     'rest_framework.authtoken',
     'coreapi',
@@ -99,7 +100,7 @@ DATABASES = {
     # }
 
     'default': dj_database_url.config(
-        default=config('DATABASE_URL_EXTERNA')
+        default=config('DATABASE_URL_INTERNA')
     )
 }
 
