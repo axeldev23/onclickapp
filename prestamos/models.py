@@ -1,5 +1,6 @@
 from django.db import models
 import os
+from django.core.files.storage import default_storage
 
 
 class Cliente(models.Model):
@@ -9,26 +10,27 @@ class Cliente(models.Model):
     correo_electronico = models.EmailField(blank=True, null=True)
     numero_telefono = models.CharField(max_length=20)
     foto_identificacion = models.ImageField(upload_to='clientes_identificaciones/', blank=True, null=True)
-    clave_elector = models.CharField(max_length=18, unique=True)  
+    clave_elector = models.CharField(max_length=18, unique=True)
 
     def delete(self, *args, **kwargs):
         if self.foto_identificacion:
-            if os.path.isfile(self.foto_identificacion.path):
-                os.remove(self.foto_identificacion.path)
+            if default_storage.exists(self.foto_identificacion.name):
+                default_storage.delete(self.foto_identificacion.name)
         super(Cliente, self).delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         try:
             old_instance = Cliente.objects.get(pk=self.pk)
             if old_instance.foto_identificacion and old_instance.foto_identificacion != self.foto_identificacion:
-                if os.path.isfile(old_instance.foto_identificacion.path):
-                    os.remove(old_instance.foto_identificacion.path)
+                if default_storage.exists(old_instance.foto_identificacion.name):
+                    default_storage.delete(old_instance.foto_identificacion.name)
         except Cliente.DoesNotExist:
             pass
         super(Cliente, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre_completo
+
     
     
 class Prestamo(models.Model):
