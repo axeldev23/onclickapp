@@ -7,11 +7,26 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import permission_classes, authentication_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.http import Http404
 from django.http import FileResponse
+from rest_framework.parsers import MultiPartParser, FormParser
+
+
+
+
+@api_view(['PATCH'])
+@parser_classes([MultiPartParser, FormParser])
+def update_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, pk=cliente_id)
+    serializer = ClienteSerializer(cliente, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def download_image(request, cliente_id):
@@ -75,3 +90,5 @@ class PrestamoViewSet(viewsets.ModelViewSet):
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+
+
