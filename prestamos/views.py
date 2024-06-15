@@ -18,12 +18,68 @@ from django.conf import settings
 import os
 from docx import Document
 from django.http import HttpResponse
-from .serializer import DocumentSerializer
+from .serializer import DocumentSerializerAmortizacion, DocumentSerializer
 from rest_framework.views import APIView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from python_docx_replace import docx_replace
+from datetime import datetime, timedelta
 
+
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AmortizacionAPIView(APIView):
+
+    def post(self, request):
+        serializer = DocumentSerializerAmortizacion(data=request.data)
+        if serializer.is_valid():
+            try:
+                doc_path = os.path.join(settings.BASE_DIR, 'static', 'formatos', 'TablaAmortizacionFormato.docx')
+                doc = Document(doc_path)
+
+                replacements = {
+                    'clientes.nombre_completo': serializer.validated_data['nombre_completo'],
+                    'prestamos.equipo_a_adquirir': serializer.validated_data['equipo_a_adquirir'],
+                    'prestamos.equipo_precio': str(serializer.validated_data['equipo_precio']),
+                    'prestamos.pago_inicial': str(serializer.validated_data['pago_inicial']),
+                    'prestamos.monto_credito': str(serializer.validated_data['monto_credito']),
+                    'prestamos.plazo_credito': str(serializer.validated_data['plazo_credito']),
+                    'variable_monto_parcialidad': str(serializer.validated_data['monto_parcialidad']),
+                    'prestamos.total_a_pagar': str(serializer.validated_data['total_a_pagar']),
+                }
+
+                # Reemplazar los campos de texto con sus valores
+                docx_replace(doc, **replacements)
+
+                # Encontrar la tabla específica (en este caso, la primera tabla)
+                table = doc.tables[0]
+
+                num_pagos = serializer.validated_data['plazo_credito']
+                monto_pago = float(serializer.validated_data['monto_parcialidad'])
+                fecha_inicio = serializer.validated_data['fecha_inicial']
+                fecha_inicio_dt = datetime.strptime(fecha_inicio.strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+                for i in range(num_pagos):
+                    row_cells = table.add_row().cells
+                    row_cells[0].text = str(i + 1)
+                    row_cells[1].text = (fecha_inicio_dt + timedelta(weeks=i)).strftime('%d-%m-%Y')
+                    row_cells[2].text = f'${monto_pago:.2f}'
+                    row_cells[3].text = ''  # Estado inicial de pago
+
+                buffer = io.BytesIO()
+                doc.save(buffer)
+                buffer.seek(0)
+
+                response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                response['Content-Disposition'] = f'attachment; filename="tabla_amortizacion_{serializer.validated_data["nombre_completo"]}.docx"'
+
+                return response
+            except Exception as e:
+                return Response({'error': 'Error al procesar el documento.', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
