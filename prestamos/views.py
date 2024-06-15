@@ -24,6 +24,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from python_docx_replace import docx_replace
 from datetime import datetime, timedelta
+import requests
 
 
 
@@ -138,13 +139,19 @@ def update_cliente(request, cliente_id):
 def download_image(request, cliente_id):
     cliente = get_object_or_404(Cliente, pk=cliente_id)
     if cliente.foto_identificacion:
-        file_path = cliente.foto_identificacion.path
+        file_url = cliente.foto_identificacion.url
         try:
-            return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=cliente.foto_identificacion.name)
-        except FileNotFoundError:
-            raise Http404()
+            # Usar requests para obtener el archivo desde la URL
+            response = requests.get(file_url, stream=True)
+            if response.status_code == 200:
+                # Preparar una respuesta de archivo con el contenido de la URL
+                return FileResponse(response.raw, as_attachment=True, filename=os.path.basename(file_url))
+            else:
+                raise Http404("File not found on server.")
+        except Exception as e:
+            raise Http404(f"File not found: {e}")
     else:
-        raise Http404()
+        raise Http404("No image found for this client.")
 
 
 @api_view(['POST'])
