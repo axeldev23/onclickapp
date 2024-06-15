@@ -39,7 +39,7 @@ wheels/
 # media_root/
 
 # Static files
-staticfiles/
+#staticfiles/
 static/
 
 # Uploads
