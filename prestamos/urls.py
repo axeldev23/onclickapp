@@ -17,6 +17,7 @@ urlpatterns = [
     re_path('profile', views.profile),
     path('download_image/<int:cliente_id>/', views.download_image, name='download_image'),  # Añade esta línea
     path('clientes/<int:cliente_id>/update/', views.update_cliente, name='update_cliente'),
+    path('generar-pagare/', views.DocumentAPIView.as_view(), name='generar-pagare'),  # Asegúrate de que esta línea esté correcta
 
 
 ]

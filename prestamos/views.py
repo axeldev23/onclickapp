@@ -13,10 +13,60 @@ from rest_framework.authentication import TokenAuthentication
 from django.http import Http404
 from django.http import FileResponse
 from rest_framework.parsers import MultiPartParser, FormParser
+import io
+from django.conf import settings
+import os
+from docx import Document
+from django.http import HttpResponse
+from .serializer import DocumentSerializer
+from rest_framework.views import APIView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from python_docx_replace import docx_replace
 
 
 
 
+
+@method_decorator(csrf_exempt, name='dispatch')  # Deshabilitar la verificación CSRF
+class DocumentAPIView(APIView):
+
+    def post(self, request):
+        serializer = DocumentSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                doc_path = os.path.join(settings.BASE_DIR, 'static', 'formatos', 'PAGARÉ Formato.docx')
+                doc = Document(doc_path)
+                
+                replacements = {
+                    'prestamos.fecha_inicio': serializer.validated_data['fecha_inicio'],
+                    'cliente.nombre_completo': serializer.validated_data['nombre_completo'],
+                    'cliente.clave_elector': serializer.validated_data['clave_elector'],
+                    'cliente.domicilio_actual': serializer.validated_data['domicilio_actual'],
+                    'variable_total_a_pagar': serializer.validated_data['variable_total_a_pagar'],
+                    'prestamos.equipo_a_adquirir': serializer.validated_data['equipo_a_adquirir'],
+                    'prestamos.interes': serializer.validated_data['interes'],
+                    'prestamos.plazo_credito': serializer.validated_data['plazo_credito'],
+                    'variable_fecha_primer_pago': serializer.validated_data['variable_fecha_primer_pago'],
+                    'variable_fecha_ultimo_pago': serializer.validated_data['variable_fecha_ultimo_pago'],
+                }
+
+                # Llamar a docx_replace con el documento y las sustituciones
+                docx_replace(doc, **replacements)
+
+                buffer = io.BytesIO()
+                doc.save(buffer)
+                buffer.seek(0)
+
+                response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                response['Content-Disposition'] = f'attachment; filename="pagare_{serializer.validated_data["nombre_completo"]}.docx"'
+
+                return response
+            except Exception as e:
+                return Response({'error': 'Error al procesar el documento.', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 @api_view(['PATCH'])
 @parser_classes([MultiPartParser, FormParser])
 def update_cliente(request, cliente_id):
