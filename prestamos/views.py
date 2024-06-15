@@ -35,7 +35,7 @@ class DocumentAPIView(APIView):
         serializer = DocumentSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                doc_path = os.path.join(settings.BASE_DIR, 'staticfiles', 'formatos', 'PAGARÉ Formato.docx')
+                doc_path = os.path.join(settings.STATIC_ROOT, 'formatos', 'PAGARÉ Formato.docx')
                 doc = Document(doc_path)
                 
                 replacements = {
