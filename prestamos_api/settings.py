@@ -99,9 +99,18 @@ DATABASES = {
     #     'PORT': '3308',
     # }
 
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL_INTERNA')
-    )
+    #'default': dj_database_url.config(
+    #   default=config('DATABASE_URL_INTERNA')
+    #)
+
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('SUPABASE_DB_NAME'),
+        'USER': config('SUPABASE_DB_USER'),
+        'PASSWORD': config('SUPABASE_DB_PASSWORD'),
+        'HOST': config('SUPABASE_DB_HOST'),
+        'PORT': config('SUPABASE_DB_PORT'),
+    }
 }
 
 
