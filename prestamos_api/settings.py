@@ -103,7 +103,7 @@ DATABASES = {
     #   default=config('DATABASE_URL_INTERNA')
     #)
 
-     'default': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': config('SUPABASE_DB_NAME'),
         'USER': config('SUPABASE_DB_USER'),

@@ -49,6 +49,19 @@ class AmortizacionAPIView(APIView):
                     'prestamos.plazo_credito': str(serializer.validated_data['plazo_credito']),
                     'variable_monto_parcialidad': str(serializer.validated_data['monto_parcialidad']),
                     'prestamos.total_a_pagar': str(serializer.validated_data['total_a_pagar']),
+                    'prestamos.fecha_inicio': str(serializer.validated_data['fecha_inicio']),
+
+                    'clientes.domicilio_actual': str(serializer.validated_data['domicilio_actual']),
+                    'clientes.numero_telefono': serializer.validated_data['numero_telefono'],
+                    'prestamos.prestamo_id': serializer.validated_data['prestamo_id'],
+                    'prestamos.imei': serializer.validated_data['imei'],
+                    
+
+
+
+
+
+
                 }
 
                 # Reemplazar los campos de texto con sus valores
@@ -59,13 +72,13 @@ class AmortizacionAPIView(APIView):
 
                 num_pagos = serializer.validated_data['plazo_credito']
                 monto_pago = float(serializer.validated_data['monto_parcialidad'])
-                fecha_inicio = serializer.validated_data['fecha_inicial']
-                fecha_inicio_dt = datetime.strptime(fecha_inicio.strftime('%Y-%m-%d'), '%Y-%m-%d')
+                fecha_inicial = serializer.validated_data['fecha_inicial']
+                fecha_inicial_dt = datetime.strptime(fecha_inicial.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
                 for i in range(num_pagos):
                     row_cells = table.add_row().cells
                     row_cells[0].text = str(i + 1)
-                    row_cells[1].text = (fecha_inicio_dt + timedelta(weeks=i)).strftime('%d-%m-%Y')
+                    row_cells[1].text = (fecha_inicial_dt + timedelta(weeks=i)).strftime('%d-%m-%Y')
                     row_cells[2].text = f'${monto_pago:.2f}'
                     row_cells[3].text = ''  # Estado inicial de pago
 

@@ -32,6 +32,8 @@ class DocumentSerializer(serializers.Serializer):
     variable_fecha_primer_pago = serializers.CharField()
     variable_fecha_ultimo_pago = serializers.CharField()
 
+
+
 class DocumentSerializerAmortizacion(serializers.Serializer):
     nombre_completo = serializers.CharField(max_length=255)
     equipo_a_adquirir = serializers.CharField(max_length=255)
@@ -42,3 +44,8 @@ class DocumentSerializerAmortizacion(serializers.Serializer):
     monto_parcialidad = serializers.DecimalField(max_digits=10, decimal_places=2)
     fecha_inicial = serializers.DateField(format='%Y-%m-%d')
     total_a_pagar = serializers.DecimalField(max_digits=10, decimal_places=2)
+    fecha_inicio = serializers.DateField(format='%Y-%m-%d')
+    imei = serializers.CharField()
+    domicilio_actual = serializers.CharField()
+    numero_telefono = serializers.CharField()
+    prestamo_id = serializers.CharField()
