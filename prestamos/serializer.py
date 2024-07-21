@@ -20,6 +20,24 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'password']
 
+# FORMATO TABLA DE AMORTIZACIÓN
+class DocumentSerializerAmortizacion(serializers.Serializer):
+    nombre_completo = serializers.CharField(max_length=255)
+    equipo_a_adquirir = serializers.CharField(max_length=255)
+    equipo_precio = serializers.DecimalField(max_digits=10, decimal_places=2)
+    pago_inicial = serializers.DecimalField(max_digits=10, decimal_places=2)
+    monto_credito = serializers.DecimalField(max_digits=10, decimal_places=2)
+    plazo_credito = serializers.IntegerField()
+    monto_parcialidad = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_a_pagar = serializers.DecimalField(max_digits=10, decimal_places=2)
+    fecha_inicio = serializers.DateField(format='%Y-%m-%d')
+    imei = serializers.CharField()
+    domicilio_actual = serializers.CharField()
+    numero_telefono = serializers.CharField()
+    prestamo_id = serializers.CharField()
+    fecha_primer_pago = serializers.DateField(format='%Y-%m-%d')
+
+# FORMATO PAGARÉ
 class DocumentSerializer(serializers.Serializer):
     fecha_inicio = serializers.CharField()
     equipo_a_adquirir = serializers.CharField()
@@ -33,19 +51,3 @@ class DocumentSerializer(serializers.Serializer):
     variable_fecha_ultimo_pago = serializers.CharField()
 
 
-
-class DocumentSerializerAmortizacion(serializers.Serializer):
-    nombre_completo = serializers.CharField(max_length=255)
-    equipo_a_adquirir = serializers.CharField(max_length=255)
-    equipo_precio = serializers.DecimalField(max_digits=10, decimal_places=2)
-    pago_inicial = serializers.DecimalField(max_digits=10, decimal_places=2)
-    monto_credito = serializers.DecimalField(max_digits=10, decimal_places=2)
-    plazo_credito = serializers.IntegerField()
-    monto_parcialidad = serializers.DecimalField(max_digits=10, decimal_places=2)
-    fecha_inicial = serializers.DateField(format='%Y-%m-%d')
-    total_a_pagar = serializers.DecimalField(max_digits=10, decimal_places=2)
-    fecha_inicio = serializers.DateField(format='%Y-%m-%d')
-    imei = serializers.CharField()
-    domicilio_actual = serializers.CharField()
-    numero_telefono = serializers.CharField()
-    prestamo_id = serializers.CharField()

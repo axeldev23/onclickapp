@@ -29,10 +29,9 @@ import requests
 
 
 
-
+# FORMATO TABLA DE AMORTIZACIÓN
 @method_decorator(csrf_exempt, name='dispatch')
 class AmortizacionAPIView(APIView):
-
     def post(self, request):
         serializer = DocumentSerializerAmortizacion(data=request.data)
         if serializer.is_valid():
@@ -50,18 +49,10 @@ class AmortizacionAPIView(APIView):
                     'variable_monto_parcialidad': str(serializer.validated_data['monto_parcialidad']),
                     'prestamos.total_a_pagar': str(serializer.validated_data['total_a_pagar']),
                     'prestamos.fecha_inicio': str(serializer.validated_data['fecha_inicio']),
-
                     'clientes.domicilio_actual': str(serializer.validated_data['domicilio_actual']),
                     'clientes.numero_telefono': serializer.validated_data['numero_telefono'],
                     'prestamos.prestamo_id': serializer.validated_data['prestamo_id'],
                     'prestamos.imei': serializer.validated_data['imei'],
-                    
-
-
-
-
-
-
                 }
 
                 # Reemplazar los campos de texto con sus valores
@@ -72,7 +63,7 @@ class AmortizacionAPIView(APIView):
 
                 num_pagos = serializer.validated_data['plazo_credito']
                 monto_pago = float(serializer.validated_data['monto_parcialidad'])
-                fecha_inicial = serializer.validated_data['fecha_inicial']
+                fecha_inicial = serializer.validated_data['fecha_primer_pago']
                 fecha_inicial_dt = datetime.strptime(fecha_inicial.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
                 for i in range(num_pagos):
@@ -98,6 +89,7 @@ class AmortizacionAPIView(APIView):
 
 
 
+# FORMATO PAGARÉ
 @method_decorator(csrf_exempt, name='dispatch')  # Deshabilitar la verificación CSRF
 class DocumentAPIView(APIView):
 
@@ -120,7 +112,6 @@ class DocumentAPIView(APIView):
                     'variable_fecha_primer_pago': serializer.validated_data['variable_fecha_primer_pago'],
                     'variable_fecha_ultimo_pago': serializer.validated_data['variable_fecha_ultimo_pago'],
                 }
-
                 # Llamar a docx_replace con el documento y las sustituciones
                 docx_replace(doc, **replacements)
 
@@ -136,6 +127,9 @@ class DocumentAPIView(APIView):
                 return Response({'error': 'Error al procesar el documento.', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
     
 @api_view(['PATCH'])
 @parser_classes([MultiPartParser, FormParser])

@@ -44,6 +44,7 @@ class Prestamo(models.Model):
     interes = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     fecha_inicio = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=100, default='ACTIVO')
+    fecha_primer_pago = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.cliente.nombre_completo} - {self.equipo_a_adquirir}"
