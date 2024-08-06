@@ -19,6 +19,8 @@ urlpatterns = [
     path('clientes/<int:cliente_id>/update/', views.update_cliente, name='update_cliente'),
     path('generar-pagare/', views.DocumentAPIView.as_view(), name='generar-pagare'),  # Asegúrate de que esta línea esté correcta
     path('generar-contrato/', views.AmortizacionAPIView.as_view(), name='generar-contrato'),  # Asegúrate de que esta línea esté correcta
+    path('get_user_by_id/', views.get_user_by_id, name='get_user_by_id'),  # Añade esta línea
+
 
 ]
 

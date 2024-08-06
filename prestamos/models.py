@@ -1,6 +1,8 @@
 from django.db import models
 import os
 from django.core.files.storage import default_storage
+from django.contrib.auth.models import User
+
 
 
 class Cliente(models.Model):
@@ -45,6 +47,8 @@ class Prestamo(models.Model):
     fecha_inicio = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=100, default='ACTIVO')
     fecha_primer_pago = models.DateField(blank=True, null=True)
+    creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
 
     def __str__(self):
         return f"{self.cliente.nombre_completo} - {self.equipo_a_adquirir}"

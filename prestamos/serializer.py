@@ -15,10 +15,16 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = '__all__'
 
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'password', 'is_staff']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
 
 # FORMATO TABLA DE AMORTIZACIÓN
 class DocumentSerializerAmortizacion(serializers.Serializer):

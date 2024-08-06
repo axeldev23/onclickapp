@@ -211,4 +211,16 @@ class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
 
+@api_view(['POST'])
+def get_user_by_id(request):
+    user_id = request.data.get('id')
+    if not user_id:
+        return Response({'error': 'El campo "id" es requerido.'}, status=status.HTTP_400_BAD_REQUEST)
 
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
