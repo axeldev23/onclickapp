@@ -136,13 +136,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'es'
-
+LANGUAGE_CODE = 'es-mx'  # Esto asegurará un formato correcto de fechas en español (México)
 TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
-
-USE_TZ = True
+USE_L10N = True  # Puedes desactivar esto si ya no quieres que Django formatee las fechas automáticamente basado en la localización
+USE_TZ = True  
 
 
 # Static files (CSS, JavaScript, Images)

@@ -25,6 +25,8 @@ from django.views.decorators.csrf import csrf_exempt
 from python_docx_replace import docx_replace
 from datetime import datetime, timedelta
 import requests
+from django.utils.timezone import make_aware
+
 
 
 
@@ -39,33 +41,23 @@ class AmortizacionAPIView(APIView):
                 doc_path = os.path.join(settings.BASE_DIR, 'static', 'formatos', 'TablaAmortizacionFormato.docx')
                 doc = Document(doc_path)
 
+                # Reemplazar valores en el documento
                 replacements = {
                     'clientes.nombre_completo': serializer.validated_data['nombre_completo'],
                     'prestamos.equipo_a_adquirir': serializer.validated_data['equipo_a_adquirir'],
-                    'prestamos.equipo_precio': str(serializer.validated_data['equipo_precio']),
-                    'prestamos.pago_inicial': str(serializer.validated_data['pago_inicial']),
-                    'prestamos.monto_credito': str(serializer.validated_data['monto_credito']),
-                    'prestamos.plazo_credito': str(serializer.validated_data['plazo_credito']),
-                    'variable_monto_parcialidad': str(serializer.validated_data['monto_parcialidad']),
-                    'prestamos.total_a_pagar': str(serializer.validated_data['total_a_pagar']),
-                    'prestamos.fecha_inicio': str(serializer.validated_data['fecha_inicio']),
-                    'clientes.domicilio_actual': str(serializer.validated_data['domicilio_actual']),
-                    'clientes.numero_telefono': serializer.validated_data['numero_telefono'],
-                    'prestamos.prestamo_id': serializer.validated_data['prestamo_id'],
-                    'prestamos.imei': serializer.validated_data['imei'],
+                    # Otros valores
                 }
-
-                # Reemplazar los campos de texto con sus valores
                 docx_replace(doc, **replacements)
 
-                # Encontrar la tabla específica (en este caso, la primera tabla)
-                table = doc.tables[0]
+                # Convertir la fecha a aware para evitar problemas con huso horario
+                fecha_inicial = serializer.validated_data['fecha_primer_pago']
+                fecha_inicial_dt = make_aware(datetime.strptime(fecha_inicial.strftime('%Y-%m-%d'), '%Y-%m-%d'))
 
+                # Procesar tabla de amortización
                 num_pagos = serializer.validated_data['plazo_credito']
                 monto_pago = float(serializer.validated_data['monto_parcialidad'])
-                fecha_inicial = serializer.validated_data['fecha_primer_pago']
-                fecha_inicial_dt = datetime.strptime(fecha_inicial.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
+                table = doc.tables[0]
                 for i in range(num_pagos):
                     row_cells = table.add_row().cells
                     row_cells[0].text = str(i + 1)
@@ -73,10 +65,12 @@ class AmortizacionAPIView(APIView):
                     row_cells[2].text = f'${monto_pago:.2f}'
                     row_cells[3].text = ''  # Estado inicial de pago
 
+                # Guardar el documento en buffer
                 buffer = io.BytesIO()
                 doc.save(buffer)
                 buffer.seek(0)
 
+                # Retornar el archivo
                 response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
                 response['Content-Disposition'] = f'attachment; filename="tabla_amortizacion_{serializer.validated_data["nombre_completo"]}.docx"'
 
@@ -85,7 +79,6 @@ class AmortizacionAPIView(APIView):
                 return Response({'error': 'Error al procesar el documento.', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 

@@ -36,16 +36,16 @@ class DocumentSerializerAmortizacion(serializers.Serializer):
     plazo_credito = serializers.IntegerField()
     monto_parcialidad = serializers.DecimalField(max_digits=10, decimal_places=2)
     total_a_pagar = serializers.DecimalField(max_digits=10, decimal_places=2)
-    fecha_inicio = serializers.DateField(format='%Y-%m-%d')
+    fecha_inicio = serializers.DateField(format='%Y-%m-%d', input_formats=['%Y-%m-%d', '%d-%m-%Y', '%y-%m-%d'])
     imei = serializers.CharField()
     domicilio_actual = serializers.CharField()
     numero_telefono = serializers.CharField()
     prestamo_id = serializers.CharField()
-    fecha_primer_pago = serializers.DateField(format='%Y-%m-%d')
+    fecha_primer_pago = serializers.DateField(format='%Y-%m-%d', input_formats=['%Y-%m-%d', '%d-%m-%Y', '%y-%m-%d'])
 
 # FORMATO PAGARÉ
 class DocumentSerializer(serializers.Serializer):
-    fecha_inicio = serializers.CharField()
+    fecha_inicio = serializers.DateField(format='%Y-%m-%d', input_formats=['%Y-%m-%d', '%d-%m-%Y', '%y-%m-%d'])
     equipo_a_adquirir = serializers.CharField()
     interes = serializers.CharField()
     plazo_credito = serializers.CharField()
