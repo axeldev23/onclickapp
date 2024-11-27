@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Prestamo, Cliente
+from .models import Prestamo, Cliente, Pago
 from django.contrib.auth.models import User
 
 
@@ -57,3 +57,9 @@ class DocumentSerializer(serializers.Serializer):
     variable_fecha_ultimo_pago = serializers.CharField()
 
 
+class PagoSerializer(serializers.ModelSerializer):
+    prestamo = PrestamoSerializer(read_only=True)  # Mostrar detalles del préstamo relacionado
+
+    class Meta:
+        model = Pago
+        fields = ['id', 'prestamo', 'fecha_pago_programada', 'monto_pago', 'pagado']

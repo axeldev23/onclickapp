@@ -21,6 +21,20 @@ urlpatterns = [
     path('generar-contrato/', views.AmortizacionAPIView.as_view(), name='generar-contrato'),  # Asegúrate de que esta línea esté correcta
     path('get_user_by_id/', views.get_user_by_id, name='get_user_by_id'),  # Añade esta línea
 
+# Rutas para la gestión de pagos
+    path('prestamo/<int:prestamo_id>/pagos/', views.listar_pagos_prestamo, name='listar_pagos_prestamo'),  # Listar pagos de un préstamo
+    path('pago/<int:pago_id>/registrar/', views.registrar_pago, name='registrar_pago'),  # Registrar un pago
+    path('pago/<int:pago_id>/desregistrar/', views.desregistrar_pago, name='desregistrar_pago'),  # Desregistrar un pago
+    path('pago/<int:pago_id>/', views.detalles_pago, name='detalles_pago'),  # Detalles de un pago específico
+
+
+    path('prestamos/<int:prestamo_id>/actualizar-estatus/', views.actualizar_estatus_prestamo, name='actualizar_estatus_prestamo'),
+
+    path('prestamos/enviar-sms', views.enviar_sms, name='enviar_sms'),
+    path('prestamos/<int:prestamo_id>/actualizar-estado/', views.actualizar_estado_prestamo, name='actualizar_estado_prestamo'),
+
+
+
 
 ]
 

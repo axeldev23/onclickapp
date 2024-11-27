@@ -16,7 +16,6 @@ import dj_database_url
 from decouple import config
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -105,11 +104,11 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('SUPABASE_DB_NAME'),
-        'USER': config('SUPABASE_DB_USER'),
-        'PASSWORD': config('SUPABASE_DB_PASSWORD'),
-        'HOST': config('SUPABASE_DB_HOST'),
-        'PORT': config('SUPABASE_DB_PORT'),
+        'NAME': config('SUPABASE_DB_NAME_PROD'),
+        'USER': config('SUPABASE_DB_USER_PROD'),
+        'PASSWORD': config('SUPABASE_DB_PASSWORD_PROD'),
+        'HOST': config('SUPABASE_DB_HOST_PROD'),
+        'PORT': config('SUPABASE_DB_PORT_PROD'),
     }
 }
 
